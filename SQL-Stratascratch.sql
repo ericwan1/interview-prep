@@ -43,3 +43,32 @@ select
     *
 from
     host_popularity
+
+-- https://platform.stratascratch.com/coding/10077-income-by-title-and-gender?tabname=question
+with cte1 as (
+    select 
+        id, 
+        employee_title, 
+        sex, 
+        salary, 
+        bonus 
+    from sf_employee
+    left join 
+    (select 
+        worker_ref_id, 
+        sum(bonus) as bonus 
+    from sf_bonus 
+    group by worker_ref_id) agg_bonus
+    on sf_employee.id = agg_bonus.worker_ref_id
+),
+cte2 as (
+    select 
+        employee_title,
+        sex,
+        avg(salary + bonus) as avg_compensation
+    from cte1
+    group by employee_title, sex
+)
+select * 
+from cte2
+where avg_compensation is not NULL
