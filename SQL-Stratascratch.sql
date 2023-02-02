@@ -72,3 +72,28 @@ cte2 as (
 select * 
 from cte2
 where avg_compensation is not NULL
+
+-- https://leetcode.com/problems/trips-and-users/solutions/?orderBy=most_votes
+with cte1 as (
+    select 
+        *,
+        if(status like '%cancelled%', 1, 0) as cancelled_orders
+    from Trips 
+    where client_id in (
+            select users_id 
+            from Users 
+            where banned = 'No'
+            )
+        and driver_id in (
+            select users_id 
+            from Users 
+            where banned = 'No'
+            )
+        and request_at between '2013-10-01' and '2013-10-03'
+)
+
+select 
+    request_at as Day, 
+    round(sum(cancelled_orders) / count(*), 2) as 'Cancellation Rate'
+from cte1
+group by Day
