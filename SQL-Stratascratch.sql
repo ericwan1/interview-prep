@@ -73,7 +73,7 @@ select *
 from cte2
 where avg_compensation is not NULL
 
--- https://leetcode.com/problems/trips-and-users/solutions/?orderBy=most_votes
+-- https://leetcode.com/problems/trips-and-users/
 with cte1 as (
     select 
         *,
@@ -97,3 +97,19 @@ select
     round(sum(cancelled_orders) / count(*), 2) as 'Cancellation Rate'
 from cte1
 group by Day
+
+-- https://leetcode.com/problems/median-employee-salary/
+with cte1 as (
+    select 
+        *,
+        row_number() over (partition by company order by salary) as rank_in_company,
+        count(*) over (partition by company) as count_per_company
+    from Employee
+)
+select 
+    id,
+    company,
+    salary
+from cte1
+where
+    rank_in_company between count_per_company/2 and count_per_company/2+1
