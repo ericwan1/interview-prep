@@ -113,3 +113,26 @@ select
 from cte1
 where
     rank_in_company between count_per_company/2 and count_per_company/2+1
+
+-- https://leetcode.com/problems/the-number-of-seniors-and-juniors-to-join-the-company/description/
+with cte1 as (
+    select 
+        employee_id,
+        experience,
+        sum(salary) over (partition by experience order by salary, employee_id asc) as sum_salary 
+    from
+        candidates
+)
+select 
+    'Senior' as experience, count(*) as accepted_candidates 
+from cte1 
+where experience = 'Senior' and sum_salary <= 70000
+
+union all
+
+select 
+    'Junior' as experience, count(*) as accepted_candidates 
+from cte1 
+where 
+    experience = 'Junior' 
+    and sum_salary < (select 70000 - ifnull(max(sum_salary), 0) from cte1 where experience = 'Senior' and sum_salary <= 70000)
