@@ -136,3 +136,27 @@ from cte1
 where 
     experience = 'Junior' 
     and sum_salary < (select 70000 - ifnull(max(sum_salary), 0) from cte1 where experience = 'Senior' and sum_salary <= 70000)
+
+-- https://leetcode.com/problems/human-traffic-of-stadium/
+-- An elegant solution that I did not come up with, as I originally wanted to do three joins before I got stuck. 
+-- The trick here is to use window functions in conjunction with count/row_number and have a subtraction between id + visit
+-- The subtraction creates the visit blocks, which are then summed in the second CTE
+with cte1 as (
+    select  
+        *, 
+        id - row_number() over (order by visit_date) as date_blocks 
+    from stadium
+    where people > 100
+),
+cte2 AS (
+    SELECT 
+        * , 
+        count(*) over (partition by date_blocks) as consecutiveDateCount 
+    from cte1
+)
+select 
+    id,
+    visit_date,
+    people
+from cte2
+where consecutiveDateCount >= 3
