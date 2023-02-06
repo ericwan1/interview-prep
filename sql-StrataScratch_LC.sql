@@ -160,3 +160,19 @@ select
     people
 from cte2
 where consecutiveDateCount >= 3
+
+-- https://leetcode.com/problems/department-top-three-salaries/description/
+select 
+    department, 
+    employee, 
+    salary
+    from (
+        select 
+            d.name AS department, 
+            e.name AS employee, 
+            e.salary, 
+            dense_rank() over (partition by d.name order by e.salary desc) as drk
+        from Employee e 
+        join Department d on e.DepartmentId= d.Id
+    ) t 
+where t.drk <= 3
