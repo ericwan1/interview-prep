@@ -168,8 +168,8 @@ select
     salary
     from (
         select 
-            d.name AS department, 
-            e.name AS employee, 
+            d.name as department, 
+            e.name as employee, 
             e.salary, 
             dense_rank() over (partition by d.name order by e.salary desc) as drk
         from Employee e 
