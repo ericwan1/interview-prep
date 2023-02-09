@@ -43,3 +43,21 @@ while queue:
             queue.append((neighBorI, neighBorJ))
 
 return res
+
+# https://leetcode.com/problems/k-closest-points-to-origin/
+import heapq
+import math
+
+heap = []
+
+for (x, y) in points:
+    # this is negative, because when we pop from our heap, the minimum element is returned.
+    # if we set the distance to be negative, then the calculated smallest distances become 
+    # larger in value than the original largest distances, which are then popped. 
+    distance = -(math.sqrt(x*x + y*y))
+    if len(heap) == k:
+        heapq.heappushpop(heap, (distance, x, y))
+    else:
+        heapq.heappush(heap, (distance, x, y))
+
+return [(x,y) for (distance, x, y) in heap]
