@@ -61,3 +61,21 @@ for (x, y) in points:
         heapq.heappush(heap, (distance, x, y))
 
 return [(x,y) for (distance, x, y) in heap]
+
+# https://leetcode.com/problems/longest-substring-without-repeating-characters/
+seen = set()
+left = 0
+longest_seen_len = 0
+curr_seen_len = 0
+
+for right in range(len(s)):
+    while s[right] in seen:
+        seen.remove(s[left])
+        curr_seen_len -= 1
+        left += 1
+
+    seen.add(s[right])
+    curr_seen_len += 1
+    longest_seen_len = max(longest_seen_len, curr_seen_len)
+
+return longest_seen_len
