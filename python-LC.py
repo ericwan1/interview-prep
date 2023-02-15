@@ -135,3 +135,28 @@ def numIslands(self, grid):
                 dfs(i, j, grid_height, grid_length)
                 
     return found_island
+
+# https://leetcode.com/problems/word-break/description/
+def wordBreak(self, s, wordDict):
+    """
+    :type s: str
+    :type wordDict: List[str]
+    :rtype: bool
+    """
+    from collections import deque
+    dq = deque([s])
+    visited = set()
+
+    while dq:
+        substr = dq.popleft()
+        for word in wordDict:
+            if substr.startswith(word):
+                new_substr = substr[len(word):]
+                # check if at end of the string 
+                if new_substr == "":
+                    return True
+                if new_substr not in visited:
+                    dq.append(new_substr)
+                    visited.add(new_substr)
+
+    return False    
